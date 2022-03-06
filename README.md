@@ -1,6 +1,8 @@
 # WebRTC-Check for Android
 
-WebRTC-Check lets you test the WebRTC capability of your Android System WebView
+WebRTC-Check lets you test the WebRTC capabilities of your Android System WebView.
+
+Includes code from (c) The WebRTC project webrtc.github.io/samples
 
 ## License
 
