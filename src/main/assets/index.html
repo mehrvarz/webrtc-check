@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" id="main">
+<head>
+<!-- WebRTC-Check Copyright 2022 timur.mobi. All rights reserved. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
+<title>WebCall Android</title>
+<meta property="og:title" content="WebRTCCheck">
+<meta name="twitter:title" content="WebRTCCheck">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+::-webkit-scrollbar { display:none; }
+html {
+	width:100%; min-height:100%;
+	background-image:linear-gradient(#004, #139);
+	color:#ddd;
+	scrollbar-width:none;
+}
+body {
+	width:100%; height:100%;
+	font-family:Sans-Serif;
+	font-weight:400;
+	font-size:1.3em;
+	margin:0;
+}
+
+div#container {
+	padding: 1.2em;
+	max-width:780px;
+}
+h1 {
+	font-size:1.8em;
+	font-weight:600;
+	user-select:none;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+a, a:link, a:visited, a:active {
+    color:#ddd;
+	font-weight:600;
+    text-decoration:none;
+	user-select:none;
+	cursor:pointer;
+}
+a:hover {
+    color:#fff;
+    text-decoration:underline;
+}
+label {
+    display:inline-block;
+}
+
+</style>
+</head>
+
+<body>
+<img src="phone.svg"
+  style="position:absolute;right:0;top:2vh;width:440px;max-height:80vh;padding:2%;opacity:0.15;z-index:-1;">
+
+<div id="container">
+<h1 id="title">WebRTC-Check</h1>
+WebRTC-Check will test your System WebView component
+with a mini all-in-one video conferencing app.
+<br><br>
+What is special: You will be able to see both sides on the same screen.
+<br><br>
+A real peer-to-peer network connection will be established. 
+The remote camera feed on the right will have a slight lag.
+The delay is caused by the video stream being encrypted, sent over and being decrypted again.
+Audio is muted to prevent feedback noises.
+<br><br>
+<a href="pc1/index.html">Start</a><br><br><br>
+<div style="font-size:0.8em">(c)2022 <a href="https://timur.mobi/webcall/android/">timur.mobi</a></div>
+</div>
+
+</body>
+</html>
+

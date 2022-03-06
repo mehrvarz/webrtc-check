@@ -1,0 +1,3 @@
+WebRTC-Check lets you check the WebRTC functionality of your Android System WebView.
+You will be connected to online samples on webrtc.github.io.
+

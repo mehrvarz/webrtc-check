@@ -1,0 +1,53 @@
+// WebCall Copyright 2022 timur.mobi. All rights reserved.
+apply plugin: 'com.android.application'
+
+android {
+	compileSdkVersion 31
+	defaultConfig {
+		applicationId "timur.webrtc.check"
+		minSdkVersion 21
+		targetSdkVersion 31
+		versionCode 1
+		versionName "1.0.1"
+	}
+	buildTypes {
+		release {
+			minifyEnabled false
+		}
+		applicationVariants.all { variant ->
+			variant.outputs.all {
+				def versionName = variant.versionName
+				outputFileName = "WebRTCCheckActivity-${versionName}.apk"
+			}
+		}
+	}
+	compileOptions {
+		sourceCompatibility 1.8
+		targetCompatibility 1.8
+	}
+	lintOptions {
+		abortOnError false
+		disable 'ObsoleteLintCustomCheck'
+	}
+}
+buildscript {
+	repositories {
+	    mavenCentral()
+        maven {
+            url 'https://maven.google.com'
+        }
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:7.0.4'
+	}
+}
+repositories { 
+	mavenCentral()
+	maven {
+		url 'https://maven.google.com'
+	}
+}
+dependencies {
+	implementation 'androidx.appcompat:appcompat:1.4.0'
+}
+

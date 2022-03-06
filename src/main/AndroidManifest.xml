@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+    package="timur.webrtc.check">
+<!--
+	<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+-->
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<uses-permission android:name="android.permission.CAMERA" />
+
+	<uses-feature android:name="android.hardware.audio.low_latency" />
+	<uses-feature android:name="android.hardware.audio.pro" />
+	<uses-feature android:name="android.hardware.microphone" android:required="true"/>
+	<uses-feature android:name="android.hardware.camera.autofocus" />
+	<uses-feature android:name="android.hardware.camera" android:required="true" />
+	<uses-feature android:name="android.hardware.camera.front" android:required="true" />
+
+    <application android:label="@string/app_name" 
+                 android:allowBackup="true"
+				 android:fullBackupContent="true"
+				 android:requestLegacyExternalStorage="true"
+		         android:icon="@mipmap/ic_launcher"
+		         android:roundIcon="@mipmap/ic_launcher_round">
+        <activity
+            android:name=".WebRTCCheckActivity"
+            android:label="@string/app_name"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:theme="@android:style/Theme.Material.NoActionBar"
+			android:exported="true"
+			android:launchMode="singleInstance">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+
