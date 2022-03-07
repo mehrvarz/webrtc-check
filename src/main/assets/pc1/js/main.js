@@ -97,7 +97,7 @@ async function call() {
 
   localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
   console.log('Added local stream to pc1');
-  remoteVideo.volume = 0; // avoid audio feedback
+  remoteVideo.volume = 0; // tmtmtm avoid audio feedback
 
   try {
     console.log('pc1 createOffer start');

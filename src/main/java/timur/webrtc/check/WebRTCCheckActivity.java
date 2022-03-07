@@ -64,7 +64,7 @@ public class WebRTCCheckActivity extends Activity {
 		} catch(Exception ex) {
 			Log.d(TAG, "onCreate setContentView ex="+ex);
 			startupFail = true;
-			Toast.makeText(context, "WebCall cannot start. No System WebView installed?",
+			Toast.makeText(context, "WebRTCCheck cannot start. No System WebView installed?",
 				Toast.LENGTH_LONG).show();
 			return;
 		}
@@ -109,7 +109,6 @@ public class WebRTCCheckActivity extends Activity {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				final Uri uri = Uri.parse(url);
-				//Log.d(TAG, "shouldOverrideUrl "+url);
 				return handleUri(uri);
 			}
 
@@ -117,13 +116,11 @@ public class WebRTCCheckActivity extends Activity {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 				final Uri uri = request.getUrl();
-				//Log.d(TAG, "shouldOverrideUrl "+uri);
 				return handleUri(uri);
 			}
 
 			private boolean handleUri(final Uri uri) {
 				final String newUrl = uri.toString();
-				// if we return true here, uri will be forwarded to an external browser
 				if(newUrl.startsWith("https:")) {
 					// forward to an external browser
 					Log.i(TAG, "handleUri true "+newUrl);
@@ -206,8 +203,7 @@ public class WebRTCCheckActivity extends Activity {
 			} else if(permCamNeeed) {
 				msg = "A permission is needed for WebView to use the camera.";
 			}
-			msg += "\nOpen 'Permissions' and allow these devices to be used.";
-			msg += "\n\nOn some devices you may also need to enable 'Keep running while screen off'.";
+			msg += "\nOpen 'Permissions' and allow media devices to be used.";
 			alertbox.setMessage(msg);
 			alertbox.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
 				@Override
@@ -216,7 +212,6 @@ public class WebRTCCheckActivity extends Activity {
 						Uri.parse("package:" + getPackageName()));
 					myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
 					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					//myAppSettings.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 					context.startActivity(myAppSettings);
 				}
