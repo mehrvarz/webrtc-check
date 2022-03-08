@@ -29,14 +29,17 @@
 	<br>
 
 	<button id="startButton">Start cam</button><br>
-	This should open a live camera feed.
-	If it does not, you may have a permission problem.
+	This should open a local camera feed.
+	If it does not, there may be a permission problem.
 	<br><br>
 
 	<button id="callButton">P2P link</button> <button id="hangupButton">Hang Up</button><br>
-	This should open a remote camera feed.
+	This should create a WebRTC P2P connection and open a remote camera feed.
+	The remote camera feed on the right will have a slight lag.
+	The delay is caused by the video stream being encrypted, sent over and being decrypted again.
+	Audio is muted to prevent feedback noises.
 	If you see two camera feeds, everything is OK.
-	If you do not see a second camera feed, your System WebView is broken.
+	If you do NOT see a second camera feed, your System WebView is broken.
 	<br><br>
 
 	Sample code (c) The WebRTC project webrtc.github.io/samples

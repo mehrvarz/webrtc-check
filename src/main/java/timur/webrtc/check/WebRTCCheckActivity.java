@@ -32,6 +32,8 @@ import android.graphics.Bitmap;
 import android.provider.Settings;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.lang.reflect.Method;
 
@@ -39,6 +41,8 @@ import timur.webrtc.check.BuildConfig;
 
 public class WebRTCCheckActivity extends Activity {
 	private static final String TAG = "WebRTCCheckActivity";
+	private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+	private final int MY_PERMISSIONS_CAMERA = 2;
 
 	private WebView myWebView = null;
 	private	Context context;
@@ -59,7 +63,6 @@ public class WebRTCCheckActivity extends Activity {
 				webviewPackageInfo.packageName+" "+webviewPackageInfo.versionName);
 			webviewVersionString = webviewPackageInfo.versionName+" ("+webviewPackageInfo.packageName+")";
 		}
-
 		// the real webview test comes here and we MUST try/catch
 		try {
 			setContentView(R.layout.activity_main);
@@ -178,11 +181,6 @@ public class WebRTCCheckActivity extends Activity {
 
 		// let JS call java service code
 		myWebView.addJavascriptInterface(new WebCallJSInterface(), "Android");
-
-		currentUrl = "file:///android_asset/index.html";
-		Log.d(TAG, "startWebView load currentUrl="+currentUrl);
-		myWebView.loadUrl(currentUrl);
-		Log.d(TAG, "onCreate done");
 	}
 
 	@Override
@@ -192,44 +190,43 @@ public class WebRTCCheckActivity extends Activity {
 			Log.d(TAG, "onStart abort on startupFail");
 			return;
 		}
-		// ask user to provide basic permissions for mic and camera
-		boolean permMicNeeed = checkCallingOrSelfPermission(android.Manifest.permission.RECORD_AUDIO)
-					!= PackageManager.PERMISSION_GRANTED;
-		boolean permCamNeeed = checkCallingOrSelfPermission(android.Manifest.permission.CAMERA)
-					!= PackageManager.PERMISSION_GRANTED;
-		if(permMicNeeed || permCamNeeed) {
-			AlertDialog.Builder alertbox = new AlertDialog.Builder(context);
-			alertbox.setTitle("Permission needed");
-			String msg = "";
-			if(permMicNeeed && permCamNeeed) {
-				msg = "Permissions needed for WebView to use microphone and camera.";
-			} else if(permMicNeeed) {
-				msg = "A permission is needed for WebView to use the microphone.";
-			} else if(permCamNeeed) {
-				msg = "A permission is needed for WebView to use the camera.";
-			}
-			msg += "\nOpen 'Permissions' and allow media devices to be used.";
-			alertbox.setMessage(msg);
-			alertbox.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-						Uri.parse("package:" + getPackageName()));
-					myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
-					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-					context.startActivity(myAppSettings);
+
+		checkPermissions();
+
+		if(currentUrl==null) {
+			currentUrl = "file:///android_asset/index.html";
+			Log.d(TAG, "onStart webview load currentUrl="+currentUrl);
+			myWebView.loadUrl(currentUrl);
+		}
+		Log.d(TAG, "onStart done");
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case MY_PERMISSIONS_RECORD_AUDIO:
+				if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					Toast.makeText(this, "Permission RECORD_AUDIO granted", Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(this, "Permission RECORD_AUDIO denied", Toast.LENGTH_SHORT).show();
 				}
-			});
-			alertbox.show();
-			return;
+				checkPermissions();
+				break;
+			case MY_PERMISSIONS_CAMERA:
+				if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					Toast.makeText(this, "Permission CAMERA granted", Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(this, "Permission CAMERA denied", Toast.LENGTH_SHORT).show();
+				}
+				checkPermissions();
+				break;
 		}
 	}
 
 	@Override
 	public void onBackPressed() {
 		Log.d(TAG, "onBackPressed "+currentUrl);
-		if(!currentUrl.equals("file:///android_asset/index.html")) {
+		if(currentUrl!=null && !currentUrl.equals("file:///android_asset/index.html")) {
 			Log.d(TAG, "onBackPressed -> history.back()");
 			String str = "history.back()";
 			final ValueCallback<String> myBlock = null;
@@ -258,11 +255,80 @@ public class WebRTCCheckActivity extends Activity {
 		Log.d(TAG, "onConfigurationChanged "+newConfig);
 	}
 
-	// private
+	///////////////////////// private
+
+	private void checkPermissions() {
+		Log.d(TAG, "checkPermissions");
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+				!= PackageManager.PERMISSION_GRANTED) {
+			Log.d(TAG, "onStart RECORD_AUDIO not granted");
+			//When permission is not granted by user, show them message why this permission is needed.
+			if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
+				Toast.makeText(this, "Please grant permissions to record audio", Toast.LENGTH_LONG).show();
+				//Give user option to still opt-in the permissions
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+				    MY_PERMISSIONS_RECORD_AUDIO);
+			} else {
+				// Show user dialog to grant permission to record audio
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+					MY_PERMISSIONS_RECORD_AUDIO);
+			}
+			return;
+		}
+
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+				!= PackageManager.PERMISSION_GRANTED) {
+			Log.d(TAG, "onStart CAMERA not granted");
+			//When permission is not granted by user, show them message why this permission is needed.
+			if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+				Toast.makeText(this, "Please grant permissions to use camera", Toast.LENGTH_LONG).show();
+				//Give user option to still opt-in the permissions
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+				    MY_PERMISSIONS_CAMERA);
+			} else {
+				// Show user dialog to grant permission to use camera
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+					MY_PERMISSIONS_CAMERA);
+			}
+			return;
+		}
+/*
+		// ask user to provide basic permissions for mic and camera
+		boolean permMicNeeed = checkCallingOrSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+					!= PackageManager.PERMISSION_GRANTED;
+		boolean permCamNeeed = checkCallingOrSelfPermission(android.Manifest.permission.CAMERA)
+					!= PackageManager.PERMISSION_GRANTED;
+		Log.d(TAG, "onStart permMicNeeed="+permMicNeeed+" permCamNeeed="+permCamNeeed);
+		if(permMicNeeed || permCamNeeed) {
+			AlertDialog.Builder alertbox = new AlertDialog.Builder(context);
+			alertbox.setTitle("Permission needed");
+			String msg = "";
+			if(permMicNeeed && permCamNeeed) {
+				msg = "Permissions needed for WebView to use microphone and camera.";
+			} else if(permMicNeeed) {
+				msg = "A permission is needed for WebView to use the microphone.";
+			} else if(permCamNeeed) {
+				msg = "A permission is needed for WebView to use the camera.";
+			}
+			msg += "\nOpen 'Permissions' and allow media devices to be used.";
+			alertbox.setMessage(msg);
+			alertbox.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+						Uri.parse("package:" + getPackageName()));
+					myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
+					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					myAppSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+					context.startActivity(myAppSettings);
+				}
+			});
+			alertbox.show();
+		}
+*/
+	}
 
 	public class WebCallJSInterface {
-//		static final String TAG = "WebCallJSIntrf";
-
 		@android.webkit.JavascriptInterface
 		public String webviewVersion() {
 			return webviewVersionString;
