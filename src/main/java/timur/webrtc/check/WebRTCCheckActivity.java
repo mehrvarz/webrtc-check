@@ -33,6 +33,8 @@ import android.provider.Settings;
 import android.content.pm.PackageManager;
 import android.Manifest;
 
+import java.lang.reflect.Method;
+
 import timur.webrtc.check.BuildConfig;
 
 public class WebRTCCheckActivity extends Activity {
@@ -42,6 +44,7 @@ public class WebRTCCheckActivity extends Activity {
 	private	Context context;
 	private boolean startupFail = false;
 	private String currentUrl = null;
+	private String webviewVersionString = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +52,13 @@ public class WebRTCCheckActivity extends Activity {
 		Log.d(TAG, "onCreate "+BuildConfig.VERSION_NAME);
 		context = this;
 
-		/*
 		// call getCurrentWebViewPackageInfo() to get webview versionName, may fail on old Android / old webview
 		PackageInfo webviewPackageInfo = getCurrentWebViewPackageInfo();
 		if(webviewPackageInfo != null) {
 			Log.d(TAG, "onCreate webview packageInfo "+
 				webviewPackageInfo.packageName+" "+webviewPackageInfo.versionName);
+			webviewVersionString = webviewPackageInfo.versionName+" ("+webviewPackageInfo.packageName+")";
 		}
-		*/
 
 		// the real webview test comes here and we MUST try/catch
 		try {
@@ -169,10 +171,13 @@ public class WebRTCCheckActivity extends Activity {
 				// this replaces android's ugly default video poster with a dark grey background
 				final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
 				Canvas canvas = new Canvas(bitmap);
-				canvas.drawARGB(200, 2, 2, 2);
+				canvas.drawARGB(200, 4, 4, 4);
 				return bitmap;
 			}
 		});
+
+		// let JS call java service code
+		myWebView.addJavascriptInterface(new WebCallJSInterface(), "Android");
 
 		currentUrl = "file:///android_asset/index.html";
 		Log.d(TAG, "startWebView load currentUrl="+currentUrl);
@@ -251,6 +256,51 @@ public class WebRTCCheckActivity extends Activity {
 		// accept all changes without restarting the activity
 		super.onConfigurationChanged(newConfig);
 		Log.d(TAG, "onConfigurationChanged "+newConfig);
+	}
+
+	// private
+
+	public class WebCallJSInterface {
+//		static final String TAG = "WebCallJSIntrf";
+
+		@android.webkit.JavascriptInterface
+		public String webviewVersion() {
+			return webviewVersionString;
+		}
+	}
+
+	@SuppressWarnings({"unchecked", "JavaReflectionInvocation"})
+	private PackageInfo getCurrentWebViewPackageInfo() {
+		PackageInfo pInfo = null;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			Log.d(TAG, "getCurrentWebViewPackageInfo for O+");
+			pInfo = WebView.getCurrentWebViewPackage();
+		} else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			try {
+				Log.d(TAG, "getCurrentWebViewPackageInfo for M+");
+				Class webViewFactory = Class.forName("android.webkit.WebViewFactory");
+				Method method = webViewFactory.getMethod("getLoadedPackageInfo");
+				pInfo = (PackageInfo)method.invoke(null);
+			} catch(Exception e) {
+				Log.d(TAG, "getCurrentWebViewPackageInfo for M+ ex="+e);
+			}
+			if(pInfo==null) {
+				try {
+					Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (2)");
+					Class webViewFactory = Class.forName("com.google.android.webview.WebViewFactory");
+					Method method = webViewFactory.getMethod("getLoadedPackageInfo");
+					pInfo = (PackageInfo) method.invoke(null);
+				} catch(Exception e2) {
+					//Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (2) ex="+e2);
+				}
+			}
+		} else {
+			// no info before Lollipop
+		}
+		if(pInfo!=null) {
+			Log.d(TAG, "getCurrentWebViewPackageInfo pInfo set");
+		}
+		return pInfo;
 	}
 }
 

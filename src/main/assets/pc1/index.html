@@ -26,16 +26,19 @@
 
     <video id="localVideo" playsinline autoplay muted></video>
     <video id="remoteVideo" playsinline autoplay></video>
-
-    <div class="box">
-        <button id="startButton">Start</button>
-        <button id="callButton">Call</button>
-        <button id="hangupButton">Hang Up</button>
-    </div>
 	<br>
-	If after clicking [Call] you do NOT see two live camera feeds,
-	there is something wrong with your Android System WebView.
+
+	<button id="startButton">Start cam</button><br>
+	This should open a live camera feed.
+	If it does not, you may have a permission problem.
 	<br><br>
+
+	<button id="callButton">P2P link</button> <button id="hangupButton">Hang Up</button><br>
+	This should open a remote camera feed.
+	If you see two camera feeds, everything is OK.
+	If you do not see a second camera feed, your System WebView is broken.
+	<br><br>
+
 	Sample code (c) The WebRTC project webrtc.github.io/samples
 	<br><br><br>
 </div>

@@ -20,7 +20,7 @@ body {
 	width:100%; height:100%;
 	font-family:Sans-Serif;
 	font-weight:400;
-	font-size:1.3em;
+	font-size:1.2em;
 	margin:0;
 }
 
@@ -61,19 +61,27 @@ label {
 <h1 id="title">WebRTC-Check</h1>
 WebRTC-Check will test your System WebView component
 with a mini all-in-one video conferencing app.
-<br><br>
-What is special: You will be able to see both sides on the same screen.
+<b>What is special:</b> You don't need two devices. You can see both peers on the same screen.
 <br><br>
 A real peer-to-peer network connection will be established. 
 The remote camera feed on the right will have a slight lag.
 The delay is caused by the video stream being encrypted, sent over and being decrypted again.
 Audio is muted to prevent feedback noises.
 <br><br>
-<a href="Screenshot_WebRTC-Check.html">Show preview screenshot</a><br><br>
-<a href="pc1/index.html">Start WebRTC-Check</a><br><br>
-<div style="font-size:0.7em">(c)2022 <a href="https://timur.mobi/webcall/android/">timur.mobi</a></div>
+
+Active WebView version: <b><span id="webviewversion"></span></b>
+<br><br>
+
+<!--a href="Screenshot_WebRTC-Check.html">Show preview screenshot</a><br><br>-->
+
+<a href="pc1/index.html" style="font-size:1.2em;margin-top:15px;">Run WebRTC-Check</a><br><br>
+
+<div style="font-size:0.7em;margin-top:12px;">(c)2022 <a href="https://timur.mobi/webcall/android/">timur.mobi</a></div>
 </div>
 
 </body>
+<script>
+document.getElementById("webviewversion").innerHTML = Android.webviewVersion();
+</script>
 </html>
 
