@@ -207,18 +207,18 @@ public class WebRTCCheckActivity extends Activity {
 			case MY_PERMISSIONS_RECORD_AUDIO:
 				if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					Toast.makeText(this, "Permission RECORD_AUDIO granted", Toast.LENGTH_SHORT).show();
+					checkPermissions();
 				} else {
 					Toast.makeText(this, "Permission RECORD_AUDIO denied", Toast.LENGTH_SHORT).show();
 				}
-				checkPermissions();
 				break;
 			case MY_PERMISSIONS_CAMERA:
 				if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					Toast.makeText(this, "Permission CAMERA granted", Toast.LENGTH_SHORT).show();
+					checkPermissions();
 				} else {
 					Toast.makeText(this, "Permission CAMERA denied", Toast.LENGTH_SHORT).show();
 				}
-				checkPermissions();
 				break;
 		}
 	}
