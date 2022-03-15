@@ -79,7 +79,9 @@ Active WebView version: <b><span id="webviewversion"></span></b>
 
 </body>
 <script>
-document.getElementById("webviewversion").innerHTML = Android.webviewVersion();
+var webviewVersion = Android.webviewVersion();
+if(!webviewVersion) webviewVersion = "no version info given";
+document.getElementById("webviewversion").innerHTML = webviewVersion;
 </script>
 </html>
 
