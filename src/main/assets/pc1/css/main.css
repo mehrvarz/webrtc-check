@@ -29,6 +29,17 @@ h1 {
 	margin-top:10px;
 	margin-bottom:20px;
 }
+a, a:link, a:visited, a:active {
+    color:#ddd;
+	font-weight:600;
+    text-decoration:none;
+	user-select:none;
+	cursor:pointer;
+}
+a:hover {
+    color:#fff;
+    text-decoration:underline;
+}
 
 button {
   margin: 0px 20px 8px 0;
@@ -63,7 +74,6 @@ div.box {
   }
 
   video {
-    _height: 90px;
     margin: 0 0 10px 0;
     width: calc(50% - 7px);
   }
