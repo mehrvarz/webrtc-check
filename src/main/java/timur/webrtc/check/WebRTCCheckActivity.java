@@ -65,6 +65,7 @@ public class WebRTCCheckActivity extends Activity {
 		}
 		// the real webview test comes here and we MUST try/catch
 		try {
+			Log.d(TAG, "onCreate setContentView");
 			setContentView(R.layout.activity_main);
 		} catch(Exception ex) {
 			Log.d(TAG, "onCreate setContentView ex="+ex);
@@ -72,6 +73,16 @@ public class WebRTCCheckActivity extends Activity {
 			Toast.makeText(context, "WebRTCCheck cannot start. No System WebView installed?",
 				Toast.LENGTH_LONG).show();
 			return;
+		}
+		if(webviewPackageInfo == null) {
+			// on Android 6 + 7: reflection + getLoadedPackageInfo() will only work AFTER webview was activated
+			Log.d(TAG, "onCreate webviewPackageInfo not set");
+			webviewPackageInfo = getCurrentWebViewPackageInfo();
+			if(webviewPackageInfo != null) {
+				Log.d(TAG, "onCreate webview packageInfo "+
+					webviewPackageInfo.packageName+" "+webviewPackageInfo.versionName);
+				webviewVersionString = webviewPackageInfo.versionName+" ("+webviewPackageInfo.packageName+")";
+			}
 		}
 
 		myWebView = findViewById(R.id.webview);
@@ -355,9 +366,19 @@ public class WebRTCCheckActivity extends Activity {
 					Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (2)");
 					Class webViewFactory = Class.forName("com.google.android.webview.WebViewFactory");
 					Method method = webViewFactory.getMethod("getLoadedPackageInfo");
-					pInfo = (PackageInfo) method.invoke(null);
+					pInfo = (PackageInfo)method.invoke(null);
 				} catch(Exception e2) {
-					//Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (2) ex="+e2);
+					Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (2) ex="+e2);
+				}
+			}
+			if(pInfo==null) {
+				try {
+					Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (3)");
+					Class webViewFactory = Class.forName("com.android.webview.WebViewFactory");
+					Method method = webViewFactory.getMethod("getLoadedPackageInfo");
+					pInfo = (PackageInfo)method.invoke(null);
+				} catch(Exception e2) {
+					Log.d(TAG, "getCurrentWebViewPackageInfo for M+ (3) ex="+e2);
 				}
 			}
 		} else {

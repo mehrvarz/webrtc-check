@@ -7,8 +7,8 @@ android {
 		applicationId "timur.webrtc.check"
 		minSdkVersion 21
 		targetSdkVersion 31
-		versionCode 7
-		versionName "1.0.7"
+		versionCode 8
+		versionName "1.0.8"
 	}
 	buildTypes {
 		release {
@@ -17,7 +17,7 @@ android {
 		applicationVariants.all { variant ->
 			variant.outputs.all {
 				def versionName = variant.versionName
-				outputFileName = "WebRTCCheckActivity-${versionName}.apk"
+				outputFileName = "WebRTCCheck-${versionName}.apk"
 			}
 		}
 	}
