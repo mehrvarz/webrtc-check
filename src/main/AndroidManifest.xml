@@ -9,7 +9,6 @@
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
 	<uses-feature android:name="android.hardware.audio.low_latency" />
-	<uses-feature android:name="android.hardware.audio.pro" />
 	<uses-feature android:name="android.hardware.microphone" android:required="true"/>
 	<uses-feature android:name="android.hardware.camera.autofocus" />
 	<uses-feature android:name="android.hardware.camera" android:required="true" />
@@ -18,7 +17,6 @@
     <application android:label="@string/app_name" 
                  android:allowBackup="true"
 				 android:fullBackupContent="true"
-				 android:requestLegacyExternalStorage="true"
 		         android:icon="@mipmap/ic_launcher"
 		         android:roundIcon="@mipmap/ic_launcher_round">
         <activity
